@@ -1,0 +1,58 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "SQLServerName": {
+            "type": "string",
+            "metadata": {
+                "description": "Enter Your SQL Server Name"
+            }
+        },
+        "SQLAdminUsername": {
+            "type": "string",
+            "metadata": {
+                "description": "Enter your Admin Username"
+            }
+        },
+        "SQLAdminPassword": {
+            "type": "securestring",
+            "metadata": {
+                "description": "Enter A Password for SQL Admin"
+            }
+        }
+    },
+    "variables": {
+        "SQLServerName": "[parameters('SQLServerName')]"
+    },
+    "resources": [
+        {
+            "name": "[parameters('SQLServerName')]",
+            "type": "Microsoft.Sql/servers",
+            "apiVersion": "2021-11-01",
+            "location": "[resourceGroup().location]",
+            "tags": {
+                "displayName": "[variables('SQLServerName')]"
+            },
+            "properties": {
+                "administratorLogin": "[parameters('SQLAdminUsername')]",
+                "administratorLoginPassword": "[parameters('SQLAdminPassword')]"
+            },
+            "resources": [
+                {
+                    "type": "firewallRules",
+                    "apiVersion": "2014-04-01",
+                    "dependsOn": [
+                        "[resourceId('Microsoft.Sql/servers', variables('SQLServerName'))]"
+                    ],
+                    "location": "[resourceGroup().location]",
+                    "name": "AllowAllWindowsAzureIps",
+                    "properties": {
+                        "startIpAddress": "0.0.0.0",
+                        "endIpAddress": "0.0.0.0"
+                    }
+                }
+            ]
+        }
+    ],
+    "outputs": {}
+}
