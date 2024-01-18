@@ -1,0 +1,4 @@
+Pester Test Runner
+
+@{Path='$(System.DefaultWorkingDirectory)\tests\UnitTest.ps1'; Parameters=@{$templatepath='$(System.DefaultWorkingDirectory)\azuredeploy.json'}}
+
